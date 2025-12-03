@@ -1,5 +1,12 @@
-# Add any Python packages your notebooks need here, one per line.
-# Example:
-# numpy
-# pandas
-# matplotlib
+# Common data-science packages (modify as needed)
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+ipywidgets
+
+# If you use plotly or other libraries, add them:
+# plotly
+# statsmodels
+# pillow
