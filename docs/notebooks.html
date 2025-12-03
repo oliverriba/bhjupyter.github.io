@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Notebook Hub — Notebooks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body { background: #0b1220; color: #e6eef8; }
+      .notebook-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; overflow: hidden; }
+      .notebook-iframe { width: 100%; height: 500px; border: none; display: block; }
+      .note-desc { color: #9aa4b2; }
+      .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+    </style>
+  </head>
+  <body>
+    <header class="container py-4 d-flex justify-content-between align-items-center">
+      <h1 class="h4 m-0">Notebooks</h1>
+      <div>
+        <a class="btn btn-outline-light btn-sm" href="index.html">Home</a>
+      </div>
+    </header>
+
+    <main class="container pb-5">
+      <p class="text-muted">Below are exported notebooks embedded as HTML. They include outputs produced at export time.</p>
+      <div id="notebooksGrid" class="grid mt-4"></div>
+    </main>
+
+    <footer class="container py-4 text-muted">
+      Serve with GitHub Pages or any static host. Notebooks are exported HTML (static).
+    </footer>
+
+    <script>
+      async function loadManifest() {
+        try {
+          const res = await fetch('notebooks/manifest.json');
+          if(!res.ok) throw new Error('manifest not found');
+          const manifest = await res.json();
+          const grid = document.getElementById('notebooksGrid');
+          manifest.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'notebook-card p-3';
+            card.innerHTML = `
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h5 class="m-0 text-white">${escapeHtml(item.title)}</h5>
+                  <div class="note-desc small mt-1">${escapeHtml(item.description || '')}</div>
+                </div>
+                <div>
+                  <a class="btn btn-sm btn-light" href="notebooks/${encodeURIComponent(item.filename)}" target="_blank" rel="noopener">Open</a>
+                </div>
+              </div>
+              <div>
+                <iframe class="notebook-iframe" loading="lazy" src="notebooks/${encodeURIComponent(item.filename)}"></iframe>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+        } catch (err) {
+          console.error(err);
+          document.getElementById('notebooksGrid').innerHTML = '<div class="text-muted">No notebooks found — push notebooks into notebooks_src/ and the workflow will build them.</div>';
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]});
+      }
+
+      loadManifest();
+    </script>
+  </body>
+</html>
