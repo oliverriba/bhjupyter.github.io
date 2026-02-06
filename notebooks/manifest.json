@@ -8,5 +8,10 @@
     "title": "Sine Wave Plot",
     "description": "Simple matplotlib sine wave example.",
     "filename": "sample_plot.html"
-  }
+  },
+  {
+    "title": "Mandelbrot Set Plot",
+    "description": "plot of mandelbrot set",
+    "filename": "mandelbrot.html"
+  }  
 ]
