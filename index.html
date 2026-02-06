@@ -6,25 +6,60 @@
     <title>My Notebooks — Landing</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      body { background: linear-gradient(135deg,#0f172a 0%, #0b1220 60%); color: #fff; }
-      .hero { padding: 6rem 0; text-align: center; }
-      a.btn-primary { background: linear-gradient(90deg,#7c3aed,#06b6d4); border: none; }
-      footer { padding: 2rem 0; text-align: center; color: #9aa4b2; }
+      body {
+        background-color: #f9f9f9;
+        color: #333;
+        font-family: Arial, sans-serif;
+      }
+      .hero {
+        padding: 4rem 0;
+        text-align: center;
+      }
+      .btn-primary {
+        background-color: #4CAF50;
+        border: none;
+      }
+      .btn-outline-light {
+        border: 1px solid #4CAF50;
+        color: #4CAF50;
+      }
+      footer {
+        padding: 2rem 0;
+        text-align: center;
+        color: #888;
+      }
+      header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+      }
+      .card {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .text-muted {
+        color: #555 !important;
+      }
+      .text-start h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+      }
+      ol {
+        padding-left: 20px;
+      }
     </style>
   </head>
   <body>
     <header class="container">
       <nav class="d-flex justify-content-between align-items-center py-3">
-        <h1 class="h4 m-0">Notebook Hub</h1>
-        <div>
-          <a class="btn btn-outline-light btn-sm" href="https://github.com/">GitHub</a>
-        </div>
+        <h1 class="m-0">Notebook Hub</h1>
+        <a class="btn btn-outline-light btn-sm" href="https://github.com/">GitHub</a>
       </nav>
     </header>
 
     <main class="hero container">
-      <h2 class="display-6 fw-bold">Interactive Notebooks, beautifully presented</h2>
-      <p class="lead text-muted">A landing page that links to exported Jupyter notebooks with outputs embedded on a second page.</p>
+      <h2 class="display-5 fw-bold">Interactive Notebooks</h2>
+      <p class="lead text-muted">View and interact with exported Jupyter notebooks with all outputs embedded.</p>
       <div class="mt-4">
         <a class="btn btn-primary btn-lg me-2" href="notebooks.html">View Notebooks</a>
         <a class="btn btn-outline-light btn-lg" href="#how">How it works</a>
@@ -32,32 +67,25 @@
 
       <div class="row justify-content-center mt-5">
         <div class="col-md-8">
-          <div class="card p-4 text-dark" style="background:rgba(255,255,255,0.06); border-radius:12px;">
-            <div class="row g-3">
-              <div class="col-3 d-flex align-items-center justify-content-center">
-                <div style="width:64px;height:64px;border-radius:12px;background:linear-gradient(90deg,#7c3aed,#06b6d4)"></div>
-              </div>
-              <div class="col-9">
-                <h5 class="m-0 text-white">Fast export + embed</h5>
-                <p class="mb-0 text-muted">Export notebooks to static HTML with nbconvert, and this site will embed them for easy sharing and presentation.</p>
-              </div>
-            </div>
+          <div class="card p-4">
+            <h5>Fast export &amp; embed</h5>
+            <p class="text-muted">Export Jupyter notebooks to static HTML with nbconvert, and embed them on this site for easy sharing and presentation.</p>
           </div>
         </div>
       </div>
 
       <section id="how" class="mt-5 text-start">
-        <h3 class="h5 text-white">How it works</h3>
-        <ol class="text-muted">
-          <li>Upload notebooks (.ipynb) to notebooks_src/ via the repo web UI.</li>
-          <li>Push / commit — GitHub Actions will run and export them into docs/notebooks/.</li>
-          <li>Open the Notebooks page to see each exported notebook embedded with outputs.</li>
+        <h3>How it works</h3>
+        <ol>
+          <li>Upload notebooks (.ipynb) to the repository.</li>
+          <li>GitHub Actions will export them to static HTML.</li>
+          <li>Open the Notebooks page to see the embedded outputs.</li>
         </ol>
       </section>
     </main>
 
     <footer>
-      <small>Made with ♥ · Exported with Jupyter nbconvert · Serve via GitHub Pages</small>
+      <small>Made with ♥ · Exported with Jupyter nbconvert · Hosted on GitHub Pages</small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
