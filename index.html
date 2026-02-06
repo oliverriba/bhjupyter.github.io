@@ -73,6 +73,7 @@
       section#how h3 {
         font-size: 1.3rem;
         margin-bottom: 1.5rem;
+        color: #333;
       }
       ol {
         padding-left: 20px;
@@ -101,17 +102,16 @@
       <div class="mt-4">
         <a class="btn btn-primary btn-lg me-2" href="notebooks.html">View Notebooks</a>
       </div>
-
-      <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-          <div class="card p-4">
-            <h5>Fast export &amp; embed</h5>
-            <p class="text-muted">Export Jupyter notebooks to static HTML with nbconvert, and embed them on this site for easy sharing and presentation.</p>
-          </div>
-        </div>
-      </div>
-
     </main>
+
+    <section id="how" class="container mt-5">
+      <h3>How it works</h3>
+      <ol>
+        <li>Upload notebooks (.ipynb) to the repository.</li>
+        <li>GitHub Actions will export them to static HTML.</li>
+        <li>Open the Notebooks page to see the embedded outputs.</li>
+      </ol>
+    </section>
 
     <footer>
       <small>Made with ♥ · Exported with Jupyter nbconvert · Hosted on GitHub Pages</small>
