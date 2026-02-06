@@ -1,7 +1,12 @@
 [
   {
-    "filename": "sample_notebook.html",
-    "title": "sample_notebook",
-    "description": "# Sample Notebook"
+    "title": "Sample Notebook",
+    "description": "Example notebook",
+    "filename": "sample_notebook.html"
+  },
+  {
+    "title": "Sine Wave Plot",
+    "description": "Simple matplotlib sine wave example.",
+    "filename": "sample_plot.html"
   }
 ]
