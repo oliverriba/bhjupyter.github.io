@@ -1,72 +1,173 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Notebook Hub — Notebooks</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-      body { background: #0b1220; color: #e6eef8; }
-      .notebook-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; overflow: hidden; }
-      .notebook-iframe { width: 100%; height: 500px; border: none; display: block; }
-      .note-desc { color: #9aa4b2; }
-      .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
-    </style>
-  </head>
-  <body>
-    <header class="container py-4 d-flex justify-content-between align-items-center">
-      <h1 class="h4 m-0">Notebooks</h1>
-      <div>
-        <a class="btn btn-outline-light btn-sm" href="index.html">Home</a>
-      </div>
-    </header>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notebook Hub — Notebooks</title>
 
-    <main class="container pb-5">
-      <p class="text-muted">Below are exported notebooks embedded as HTML. They include outputs produced at export time.</p>
-      <div id="notebooksGrid" class="grid mt-4"></div>
-    </main>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <footer class="container py-4 text-muted">
-      Serve with GitHub Pages or any static host. Notebooks are exported HTML (static).
-    </footer>
+  <style>
+    body {
+      background: #0b1220;
+      color: #e6eef8;
+    }
 
-    <script>
-      async function loadManifest() {
-        try {
-          const res = await fetch('notebooks/manifest.json');
-          if(!res.ok) throw new Error('manifest not found');
-          const manifest = await res.json();
-          const grid = document.getElementById('notebooksGrid');
-          manifest.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'notebook-card p-3';
-            card.innerHTML = `
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                  <h5 class="m-0 text-white">${escapeHtml(item.title)}</h5>
-                  <div class="note-desc small mt-1">${escapeHtml(item.description || '')}</div>
-                </div>
-                <div>
-                  <a class="btn btn-sm btn-light" href="notebooks/${encodeURIComponent(item.filename)}" target="_blank" rel="noopener">Open</a>
-                </div>
-              </div>
-              <div>
-                <iframe class="notebook-iframe" loading="lazy" src="notebooks/${encodeURIComponent(item.filename)}"></iframe>
-              </div>
-            `;
-            grid.appendChild(card);
-          });
-        } catch (err) {
-          console.error(err);
-          document.getElementById('notebooksGrid').innerHTML = '<div class="text-muted">No notebooks found — push notebooks into notebooks_src/ and the workflow will build them.</div>';
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    }
+
+    .notebook-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .notebook-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .note-desc {
+      color: #9aa4b2;
+    }
+
+    .embed-container {
+      display: none;
+      margin-top: 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .notebook-iframe {
+      width: 100%;
+      height: 75vh;
+      border: none;
+      display: block;
+      background: white;
+    }
+
+    footer {
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="container py-4 d-flex justify-content-between align-items-center">
+  <h1 class="h4 m-0">Notebooks</h1>
+  <a class="btn btn-outline-light btn-sm" href="index.html">Home</a>
+</header>
+
+<main class="container pb-5">
+  <p class="text-muted">
+    Click <strong>Preview</strong> to expand a notebook inline, or open it in a full tab.
+  </p>
+
+  <div id="notebooksGrid" class="grid mt-4"></div>
+</main>
+
+<footer class="container py-4">
+  Exported Jupyter notebooks (static HTML) served via GitHub Pages.
+</footer>
+
+<script>
+async function loadManifest() {
+  try {
+    const res = await fetch('notebooks/manifest.json');
+    if (!res.ok) throw new Error('Manifest not found');
+
+    const manifest = await res.json();
+    const grid = document.getElementById('notebooksGrid');
+
+    manifest.forEach(item => {
+
+      const card = document.createElement('div');
+      card.className = 'notebook-card';
+
+      card.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h5 class="m-0 text-white">
+              ${escapeHtml(item.title)}
+            </h5>
+            <div class="note-desc small mt-2">
+              ${escapeHtml(item.description || '')}
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light preview-btn">
+              Preview
+            </button>
+
+            <a class="btn btn-sm btn-light"
+               href="notebooks/${encodeURIComponent(item.filename)}"
+               target="_blank"
+               rel="noopener">
+              Open
+            </a>
+          </div>
+        </div>
+
+        <div class="embed-container">
+          <iframe class="notebook-iframe"></iframe>
+        </div>
+      `;
+
+      grid.appendChild(card);
+
+      // Toggle logic
+      const previewBtn = card.querySelector('.preview-btn');
+      const embedContainer = card.querySelector('.embed-container');
+      const iframe = card.querySelector('iframe');
+
+      previewBtn.addEventListener('click', () => {
+        const isOpen = embedContainer.style.display === 'block';
+
+        if (isOpen) {
+          embedContainer.style.display = 'none';
+          previewBtn.textContent = 'Preview';
+        } else {
+          embedContainer.style.display = 'block';
+          previewBtn.textContent = 'Hide';
+
+          // Lazy-load iframe only when opened
+          if (!iframe.src) {
+            iframe.src = `notebooks/${encodeURIComponent(item.filename)}`;
+          }
         }
-      }
+      });
 
-      function escapeHtml(s) {
-        return String(s || '').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]});
-      }
+    });
 
-      loadManifest();
-    </script>
-  </body>
+  } catch (err) {
+    console.error(err);
+    document.getElementById('notebooksGrid').innerHTML =
+      '<div class="text-muted">No notebooks found. Make sure manifest.json exists inside /notebooks.</div>';
+  }
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, function(m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m];
+  });
+}
+
+loadManifest();
+</script>
+
+</body>
 </html>
