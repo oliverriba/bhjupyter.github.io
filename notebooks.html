@@ -8,72 +8,91 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body { background: #1f2933; color: #e5e7eb; }
+    /* Base palette (original) */
+    body { background: #121820; color: #e5e7eb; }
     body.loading { overflow: hidden; }
     h1, h2, h3, h4, h5 { color: #f9fafb; }
     .text-muted { color: #9ca3af !important; }
-    header { border-bottom: 1px solid #374151; }
+    header { border-bottom: 1px solid #2a3442; }
     footer { opacity: 0.6; color: #9ca3af; }
-    .grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
-    .notebook-card { background: #2b3440; border: 1px solid #374151; border-radius: 14px; padding: 1.25rem; transition: all 0.2s ease; }
-    .notebook-card:hover { transform: translateY(-4px); border-color: #22d3ee; }
-    .note-desc { color: #9ca3af; }
-
-    /* === Bookshelf iframe styling === */
-    .embed-container { display: none; margin-top: 1rem; }
-    .book {
-      position: relative;
-      background: #242d38;
-      border: 1px solid #374151;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 16px 42px rgba(0,0,0,0.25);
-      min-height: 60vh;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      transition: transform 220ms ease, box-shadow 220ms ease;
-    }
-    .book:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.32); }
-    .book__spine {
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 12px;
-      background: linear-gradient(90deg, #22d3ee, rgba(0,0,0,0.38));
-    }
-    .book__cover {
-      padding: 0.75rem 0.75rem 0.75rem 1.5rem;
-      background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 0.5rem;
-    }
-    .book__title {
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #22d3ee;
-      margin: 0;
-      font-size: 1rem;
-    }
-    .notebook-iframe {
-      width: 100%; height: 100%;
-      border: none;
-      border-radius: 10px;
-      background: white;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      transition: transform 200ms ease, box-shadow 200ms ease;
-    }
-    .book:hover .notebook-iframe {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-    }
-    .book--paper .notebook-iframe { background: #fdfcf7; }
-
+    a { color: #22d3ee; } a:hover { color: #67e8f9; }
     .btn-outline-light { color: #22d3ee; border-color: #22d3ee; }
     .btn-outline-light:hover { background-color: #22d3ee; color: #0b1220; }
     .btn-light { background-color: #e5e7eb; color: #111827; border: none; }
-    a { color: #22d3ee; }
-    a:hover { color: #67e8f9; }
 
-    /* ===== INTRO ANIMATION ===== */
+    /* Shelves */
+    .shelf { border: 1px solid #2a3442; border-radius: 14px; margin-bottom: 1rem; overflow: hidden; }
+    .shelf summary {
+      cursor: pointer; padding: 1rem 1.25rem; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 700; color: #f9fafb; background: linear-gradient(135deg,#1b2430,#111720);
+      position: relative; user-select: none;
+    }
+    .shelf summary::-webkit-details-marker { display: none; }
+    .shelf summary span { color: #9ca3af; font-weight: 500; }
+    .shelf-body { padding: 1.25rem; background: #141b24; }
+    .grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+    /* Cards */
+    .notebook-card {
+      background: #1a202a;
+      border: 1px solid #2d3746;
+      border-radius: 14px;
+      padding: 1.1rem;
+      box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+    .notebook-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.45); border-color: #22d3ee; }
+    .note-desc { color: #9ca3af; }
+
+    /* Bookshelf-style frame */
+    .embed-container { display: none; margin-top: 0.9rem; }
+    .book {
+      position: relative;
+      background: #0f161f;
+      border: 1px solid #223044;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(0,0,0,0.35),
+        0 20px 48px rgba(0,0,0,0.35);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .book::before, .book::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 14px;
+      pointer-events: none;
+    }
+    .book::before { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04); }
+    .book::after  { box-shadow: inset 0 10px 24px rgba(0,0,0,0.38); }
+    .book:hover { transform: translateY(-3px) scale(1.008); box-shadow: 0 26px 58px rgba(0,0,0,0.45); }
+    .book__title {
+      font-weight: 800; letter-spacing: 0.05em; color: #22d3ee; margin: 0 0 8px 2px; font-size: 0.95rem; text-transform: uppercase;
+    }
+    .frame {
+      background: #101722;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        inset 0 -1px 0 rgba(0,0,0,0.25);
+    }
+    .notebook-iframe {
+      width: 100%; height: 60vh;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .book:hover .notebook-iframe { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,0.38); }
+    .book--paper .notebook-iframe { background: #fdfcf7; }
+
+    /* Intro */
     #intro {
       position: fixed; inset: 0;
       background: radial-gradient(circle at center, #020617, #000000);
@@ -87,7 +106,7 @@
 
 <body>
 
-<!-- 🌌 INTRO -->
+<!-- Intro -->
 <div id="intro">
   <canvas id="waveCanvas"></canvas>
   <div class="intro-text">Entering Notebook Library</div>
@@ -102,8 +121,7 @@
   <p class="text-muted">
     Welcome to a <strong>Jupyter Notebook library</strong>, built by Oliver Riba Fookes. Notebooks have been contributed by Lionel London, Oliver Riba Fookes, and Yusuf Ali-Khan. Each Notebook contains a brief conceptual description and how it relates to its accompanying research paper.
   </p>
-
-  <div id="notebooksGrid" class="grid mt-4"></div>
+  <div id="shelves"></div>
 </main>
 
 <footer class="container py-4">
@@ -111,9 +129,8 @@
 </footer>
 
 <script>
-/* ===== INTRO LOGIC (unchanged) ===== */
+/* Intro logic (unchanged) */
 const intro = document.getElementById('intro');
-
 if (sessionStorage.getItem('seenIntro')) {
   intro.remove();
 } else {
@@ -122,166 +139,141 @@ if (sessionStorage.getItem('seenIntro')) {
 
   const canvas = document.getElementById('waveCanvas');
   const ctx = canvas.getContext('2d');
-
   let w, h;
-  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-  resize();
-  window.addEventListener('resize', resize);
+  function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
 
   let t = 0;
-  function draw() {
-    ctx.fillStyle = "rgba(0,0,0,0.2)";
-    ctx.fillRect(0, 0, w, h);
-
-    const cx = w / 2;
-    const cy = h / 2;
-
-    for (let i = 0; i < 6; i++) {
+  (function draw() {
+    ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(0, 0, w, h);
+    const cx = w/2, cy = h/2;
+    for (let i=0;i<6;i++) {
       ctx.beginPath();
-      for (let a = 0; a < Math.PI * 2; a += 0.02) {
-        const r = 80 + i * 30 + Math.sin(a * 4 + t + i) * 10;
-        const x = cx + Math.cos(a) * r;
-        const y = cy + Math.sin(a) * r;
-        ctx.lineTo(x, y);
+      for (let a=0;a<Math.PI*2;a+=0.02) {
+        const r = 80 + i*30 + Math.sin(a*4 + t + i)*10;
+        ctx.lineTo(cx + Math.cos(a)*r, cy + Math.sin(a)*r);
       }
       ctx.closePath();
-      ctx.strokeStyle = `rgba(34, 211, 238, ${0.15 + i * 0.1})`;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+      ctx.strokeStyle = `rgba(34,211,238,${0.15 + i*0.1})`;
+      ctx.lineWidth = 1.5; ctx.stroke();
     }
-
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
-    grad.addColorStop(0, "#000000");
-    grad.addColorStop(1, "transparent");
-
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 60, 0, Math.PI * 2);
-    ctx.fill();
-
-    t += 0.02;
-    requestAnimationFrame(draw);
-  }
-  draw();
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+    g.addColorStop(0, "#000"); g.addColorStop(1, "transparent");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI*2); ctx.fill();
+    t += 0.02; requestAnimationFrame(draw);
+  })();
 
   function closeIntro() {
-    intro.style.transition = "opacity 0.8s ease";
-    intro.style.opacity = "0";
-    setTimeout(() => {
-      intro.remove();
-      document.body.classList.remove('loading');
-    }, 800);
+    intro.style.transition = "opacity 0.8s ease"; intro.style.opacity = "0";
+    setTimeout(() => { intro.remove(); document.body.classList.remove('loading'); }, 800);
   }
-  setTimeout(closeIntro, 2000);
-  intro.addEventListener('click', closeIntro);
+  setTimeout(closeIntro, 2000); intro.addEventListener('click', closeIntro);
 }
 
-/* ===== MAIN LOGIC ===== */
+/* Manifest + shelves */
 async function loadManifest() {
   try {
     const res = await fetch('notebooks/manifest.json');
     if (!res.ok) throw new Error('Manifest not found');
-
     const manifest = await res.json();
-    const grid = document.getElementById('notebooksGrid');
+    const shelvesEl = document.getElementById('shelves');
+    const shelves = normalizeToShelves(manifest);
 
-    manifest.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'notebook-card';
-
-      card.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
-          <div>
-            <h5 class="m-0">${escapeHtml(item.title)}</h5>
-            <div class="note-desc small mt-2">${escapeHtml(item.description || '')}</div>
-          </div>
-
-          <div class="d-flex gap-2 flex-wrap justify-content-end">
-            <button class="btn btn-sm btn-outline-light preview-btn">Preview Notebook</button>
-            <button class="btn btn-sm btn-outline-light preview-paper-btn" ${item.paperFilename || item.paperUrl ? '' : 'disabled'}>Preview Paper</button>
-            <a class="btn btn-sm btn-light"
-               href="notebooks/${encodeURIComponent(item.filename)}"
-               target="_blank" rel="noopener">Open Notebook</a>
-            ${(item.paperFilename || item.paperUrl) ? `
-              <a class="btn btn-sm btn-light"
-                 href="${item.paperFilename ? `papers/${encodeURIComponent(item.paperFilename)}` : escapeHtml(item.paperUrl)}"
-                 target="_blank" rel="noopener">Open Paper</a>` : ''}
-          </div>
-        </div>
-
-        <div class="embed-container notebook-container">
-          <div class="book book--notebook">
-            <div class="book__spine"></div>
-            <div class="book__cover">
-              <header class="book__title">Notebook</header>
-              <iframe class="notebook-iframe" title="Notebook preview"></iframe>
-            </div>
-          </div>
-        </div>
-        <div class="embed-container paper-container">
-          <div class="book book--paper">
-            <div class="book__spine"></div>
-            <div class="book__cover">
-              <header class="book__title">Research Paper</header>
-              <iframe class="notebook-iframe" title="Paper preview"></iframe>
-            </div>
-          </div>
+    shelves.forEach((shelf, i) => {
+      const details = document.createElement('details');
+      details.className = 'shelf';
+      if (i === 0) details.open = true;
+      details.innerHTML = `
+        <summary>
+          <div>${escapeHtml(shelf.name || 'Shelf')}</div>
+          <span>${shelf.items.length} item${shelf.items.length===1?'':'s'}</span>
+        </summary>
+        <div class="shelf-body">
+          <div class="grid"></div>
         </div>
       `;
-      grid.appendChild(card);
+      const grid = details.querySelector('.grid');
+      shelvesEl.appendChild(details);
 
-      const notebookBtn = card.querySelector('.preview-btn');
-      const paperBtn = card.querySelector('.preview-paper-btn');
-      const notebookContainer = card.querySelector('.notebook-container');
-      const paperContainer = card.querySelector('.paper-container');
-      const notebookFrame = notebookContainer.querySelector('iframe');
-      const paperFrame = paperContainer.querySelector('iframe');
+      shelf.items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'notebook-card';
+        card.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+            <div>
+              <h5 class="m-0">${escapeHtml(item.title)}</h5>
+              <div class="note-desc small mt-2">${escapeHtml(item.description || '')}</div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap justify-content-end">
+              <button class="btn btn-sm btn-outline-light preview-btn">Preview Notebook</button>
+              <button class="btn btn-sm btn-outline-light preview-paper-btn" ${item.paperFilename || item.paperUrl ? '' : 'disabled'}>Preview Paper</button>
+              <a class="btn btn-sm btn-light" href="notebooks/${encodeURIComponent(item.filename)}" target="_blank" rel="noopener">Open Notebook</a>
+              ${(item.paperFilename || item.paperUrl) ? `
+                <a class="btn btn-sm btn-light"
+                   href="${item.paperFilename ? `papers/${encodeURIComponent(item.paperFilename)}` : escapeHtml(item.paperUrl)}"
+                   target="_blank" rel="noopener">Open Paper</a>` : ''}
+            </div>
+          </div>
 
-      function toggle(container, btn, srcSetter) {
-        const isOpen = container.style.display === 'block';
-        if (isOpen) {
-          container.style.display = 'none';
-          btn.textContent = btn === notebookBtn ? 'Preview Notebook' : 'Preview Paper';
-        } else {
-          [notebookContainer, paperContainer].forEach(c => { if (c !== container) c.style.display = 'none'; });
-          notebookBtn.textContent = 'Preview Notebook';
-          paperBtn.textContent = 'Preview Paper';
+          <div class="embed-container notebook-container">
+            <div class="book book--notebook">
+              <div class="book__title">Notebook</div>
+              <div class="frame">
+                <iframe class="notebook-iframe" title="Notebook preview"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="embed-container paper-container">
+            <div class="book book--paper">
+              <div class="book__title">Research Paper</div>
+              <div class="frame">
+                <iframe class="notebook-iframe" title="Paper preview"></iframe>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
 
-          container.style.display = 'block';
-          btn.textContent = 'Hide';
-          if (!container.dataset.loaded) {
-            container.dataset.loaded = 'true';
-            srcSetter();
+        const notebookBtn = card.querySelector('.preview-btn');
+        const paperBtn = card.querySelector('.preview-paper-btn');
+        const notebookContainer = card.querySelector('.notebook-container');
+        const paperContainer = card.querySelector('.paper-container');
+        const notebookFrame = notebookContainer.querySelector('iframe');
+        const paperFrame = paperContainer.querySelector('iframe');
+
+        function toggle(container, btn, srcSetter) {
+          const open = container.style.display === 'block';
+          if (open) { container.style.display = 'none'; btn.textContent = btn===notebookBtn ? 'Preview Notebook' : 'Preview Paper'; }
+          else {
+            [notebookContainer, paperContainer].forEach(c => { if (c !== container) c.style.display = 'none'; });
+            notebookBtn.textContent = 'Preview Notebook'; paperBtn.textContent = 'Preview Paper';
+            container.style.display = 'block'; btn.textContent = 'Hide';
+            if (!container.dataset.loaded) { container.dataset.loaded = 'true'; srcSetter(); }
           }
         }
-      }
-
-      notebookBtn.addEventListener('click', () => {
-        toggle(notebookContainer, notebookBtn, () => {
+        notebookBtn.addEventListener('click', () => toggle(notebookContainer, notebookBtn, () => {
           notebookFrame.src = `notebooks/${encodeURIComponent(item.filename)}`;
-        });
-      });
-
-      paperBtn?.addEventListener('click', () => {
-        toggle(paperContainer, paperBtn, () => {
-          if (item.paperFilename) {
-            paperFrame.src = `papers/${encodeURIComponent(item.paperFilename)}`;
-          } else if (item.paperUrl) {
-            paperFrame.src = item.paperUrl;
-          }
-        });
+        }));
+        paperBtn?.addEventListener('click', () => toggle(paperContainer, paperBtn, () => {
+          if (item.paperFilename) paperFrame.src = `papers/${encodeURIComponent(item.paperFilename)}`;
+          else if (item.paperUrl) paperFrame.src = item.paperUrl;
+        }));
       });
     });
-
   } catch (err) {
     console.error(err);
-    document.getElementById('notebooksGrid').innerHTML =
+    document.getElementById('shelves').innerHTML =
       '<div class="text-muted">No notebooks found. Make sure manifest.json exists inside /notebooks.</div>';
   }
 }
 
+function normalizeToShelves(manifest) {
+  if (Array.isArray(manifest) && manifest.length && manifest[0].items) return manifest;
+  if (Array.isArray(manifest)) return [{ name: 'All Notebooks', items: manifest }];
+  return [];
+}
 function escapeHtml(s) {
-  return String(s || '').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+  return String(s||'').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 }
 
 loadManifest();
