@@ -1,12 +1,17 @@
 [
   {
-    "title": "A radial scalar product for Kerr quasinormal modes",
-    "authors": "L. London et al.",
-    "year": 2026,
-    "paperUrl": "https://arxiv.org/html/2312.17678v4",
-    "filename": "lionelnotebook1.html",
-    "notebooks": [
-      { "title": "Jupyter Notebook", "htmlUrl": "notebooks/lionelnotebook1.html" }
+    "name": "Kerr Black Holes and Quasinormal Modes (bookshelf 1)",
+    "items": [
+      {
+        "title": "A radial scalar product for Kerr quasinormal modes",
+        "authors": "L. London et al.",
+        "year": 2026,
+        "paperUrl": "https://arxiv.org/html/2312.17678v4",
+        "filename": "lionelnotebook1.html",
+        "notebooks": [
+          { "title": "Jupyter Notebook", "htmlUrl": "notebooks/lionelnotebook1.html" }
+        ]
+      }
     ]
   }
 ]
