@@ -170,6 +170,21 @@ if (sessionStorage.getItem('seenIntro')) {
   setTimeout(closeIntro, 2000); intro.addEventListener('click', closeIntro);
 }
 
+/* Helpers */
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+}
+function getNotebookUrl(item) {
+  if (item?.notebooks?.[0]?.htmlUrl) return item.notebooks[0].htmlUrl;
+  if (item?.filename) return `notebooks/${encodeURIComponent(item.filename)}`;
+  return '';
+}
+function getPaperUrl(item) {
+  if (item?.paperFilename) return `papers/${encodeURIComponent(item.paperFilename)}`;
+  if (item?.paperUrl) return item.paperUrl;
+  return '';
+}
+
 /* Manifest + shelves */
 async function loadManifest() {
   try {
@@ -196,6 +211,10 @@ async function loadManifest() {
       shelvesEl.appendChild(details);
 
       shelf.items.forEach(item => {
+        const notebookUrl = getNotebookUrl(item);
+        const paperUrl = getPaperUrl(item);
+        const hasPaper = !!paperUrl;
+
         const card = document.createElement('div');
         card.className = 'notebook-card';
         card.innerHTML = `
@@ -205,12 +224,14 @@ async function loadManifest() {
               <div class="note-desc small mt-2">${escapeHtml(item.description || '')}</div>
             </div>
             <div class="d-flex gap-2 flex-wrap justify-content-end">
-              <button class="btn btn-sm btn-outline-light preview-btn">Preview Notebook</button>
-              <button class="btn btn-sm btn-outline-light preview-paper-btn" ${item.paperFilename || item.paperUrl ? '' : 'disabled'}>Preview Paper</button>
-              <a class="btn btn-sm btn-light" href="notebooks/${encodeURIComponent(item.filename)}" target="_blank" rel="noopener">Open Notebook</a>
-              ${(item.paperFilename || item.paperUrl) ? `
-                <a class="btn btn-sm btn-light"
-                   href="${item.paperFilename ? `papers/${encodeURIComponent(item.paperFilename)}` : escapeHtml(item.paperUrl)}"
+              <button class="btn btn-sm btn-outline-light preview-btn" ${notebookUrl ? '' : 'disabled'}>Preview Notebook</button>
+              <button class="btn btn-sm btn-outline-light preview-paper-btn" ${hasPaper ? '' : 'disabled'}>Preview Paper</button>
+              <a class="btn btn-sm btn-light open-notebook-btn"
+                 href="${notebookUrl || '#'}" ${notebookUrl ? '' : 'aria-disabled="true"'}
+                 target="_blank" rel="noopener">Open Notebook</a>
+              ${hasPaper ? `
+                <a class="btn btn-sm btn-light open-paper-btn"
+                   href="${paperUrl}"
                    target="_blank" rel="noopener">Open Paper</a>` : ''}
             </div>
           </div>
@@ -243,21 +264,28 @@ async function loadManifest() {
 
         function toggle(container, btn, srcSetter) {
           const open = container.style.display === 'block';
-          if (open) { container.style.display = 'none'; btn.textContent = btn===notebookBtn ? 'Preview Notebook' : 'Preview Paper'; }
-          else {
+          if (open) {
+            container.style.display = 'none';
+            btn.textContent = btn===notebookBtn ? 'Preview Notebook' : 'Preview Paper';
+          } else {
             [notebookContainer, paperContainer].forEach(c => { if (c !== container) c.style.display = 'none'; });
-            notebookBtn.textContent = 'Preview Notebook'; paperBtn.textContent = 'Preview Paper';
-            container.style.display = 'block'; btn.textContent = 'Hide';
+            notebookBtn.textContent = 'Preview Notebook';
+            paperBtn.textContent = 'Preview Paper';
+            container.style.display = 'block';
+            btn.textContent = 'Hide';
             if (!container.dataset.loaded) { container.dataset.loaded = 'true'; srcSetter(); }
           }
         }
-        notebookBtn.addEventListener('click', () => toggle(notebookContainer, notebookBtn, () => {
-          notebookFrame.src = `notebooks/${encodeURIComponent(item.filename)}`;
-        }));
-        paperBtn?.addEventListener('click', () => toggle(paperContainer, paperBtn, () => {
-          if (item.paperFilename) paperFrame.src = `papers/${encodeURIComponent(item.paperFilename)}`;
-          else if (item.paperUrl) paperFrame.src = item.paperUrl;
-        }));
+
+        notebookBtn?.addEventListener('click', () => {
+          if (!notebookUrl) return;
+          toggle(notebookContainer, notebookBtn, () => { notebookFrame.src = notebookUrl; });
+        });
+
+        paperBtn?.addEventListener('click', () => {
+          if (!paperUrl) return;
+          toggle(paperContainer, paperBtn, () => { paperFrame.src = paperUrl; });
+        });
       });
     });
   } catch (err) {
@@ -268,12 +296,9 @@ async function loadManifest() {
 }
 
 function normalizeToShelves(manifest) {
-  if (Array.isArray(manifest) && manifest.length && manifest[0].items) return manifest;
-  if (Array.isArray(manifest)) return [{ name: 'All Notebooks', items: manifest }];
+  if (Array.isArray(manifest) && manifest.length && manifest[0].items) return manifest;       // already grouped
+  if (Array.isArray(manifest)) return [{ name: 'All Notebooks', items: manifest }];           // simple list
   return [];
-}
-function escapeHtml(s) {
-  return String(s||'').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 }
 
 loadManifest();
