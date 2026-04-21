@@ -118,9 +118,19 @@
 </footer>
 
 <script>
+
 const intro = document.getElementById('intro');
 
-if (sessionStorage.getItem('seenIntro')) {
+function isSafari() {
+  const ua = navigator.userAgent;
+  return /^((?!chrome|android).)*safari/i.test(ua);
+}
+
+if (isSafari()) {
+  intro?.remove();
+  document.body.classList.remove('loading');
+  sessionStorage.setItem('seenIntro', 'true');
+} else if (sessionStorage.getItem('seenIntro')) {
   intro?.remove();
 } else {
 
@@ -181,9 +191,7 @@ if (sessionStorage.getItem('seenIntro')) {
         t += 0.02;
         requestAnimationFrame(draw);
 
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
     requestAnimationFrame(draw);
@@ -260,12 +268,11 @@ async function loadManifest() {
       });
     });
 
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
 }
 
 loadManifest();
+
 </script>
 
 </body>
