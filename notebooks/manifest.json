@@ -6,7 +6,7 @@
         "title": "A radial scalar product for Kerr quasinormal modes",
         "authors": "L. London et al.",
         "year": 2026,
-        "explanation": "here is an example explanation",
+        "explanation": "The notebook develops and tests this generalised scalar product that extends beyond a single quasinormal mode frequency, allowing overlaps between eigenfunctions belonging to different systems with different overtone numbers. This provides support towards London's paper concerning the radial scalar product of Kerr black holes. It tests this generalised radial scalar product by firstly, constructing two systems with differing quasinormal mode frequencies and testing to find validation of the scalar product's orthogonality. ",
         "paperUrl": "https://arxiv.org/html/2312.17678v4",
         "filename": "27_generalised_scalar_product_ANNOTATED.html",
         "notebooks": [
